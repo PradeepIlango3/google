@@ -2,9 +2,7 @@ package MyPackage;
 
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Graph {
     boolean[][] adjMatrix;
@@ -13,6 +11,7 @@ public class Graph {
     LinkedList<Integer>[] adjArray;
     List<List<Pair<Integer, Integer>>> weightList;
     List<List<Node>> customList;
+    Map<Integer, Set<Integer>> adjMap;
     int v;
     static class Node {
         int dest;
@@ -30,11 +29,13 @@ public class Graph {
         adjArray = new LinkedList[V];
         weightList = new ArrayList<>();
         customList = new ArrayList<>();
+        adjMap = new HashMap<>();
         for(int i = 0; i < V; i++) {
             adjList.add(new ArrayList<>());
             adjArray[i] = new LinkedList<>();
             weightList.add(new ArrayList<>());
             customList.add(new ArrayList<>());
+            adjMap.put(i, new HashSet<>());
         }
     }
     public void printGraphMatrix() {
@@ -90,12 +91,21 @@ public class Graph {
             k++;
             System.out.println();
         }
+        System.out.println("Adjacency Map");
+        for(Map.Entry<Integer, Set<Integer>> entry: adjMap.entrySet()) {
+            System.out.print(entry.getKey() + ":->");
+            for (Integer value: entry.getValue()) {
+                System.out.print(value + " ");
+            }
+            System.out.println();
+        }
     }
 
     public void addEdge(int src, int dest) {
         adjMatrix[src][dest] = true;
         adjList.get(src).add(dest);
         adjArray[src].add(dest);
+        adjMap.get(src).add(dest);
     }
 
     public void addEdge(int src, int dest, int weight) {
