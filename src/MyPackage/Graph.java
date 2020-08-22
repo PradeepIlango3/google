@@ -114,6 +114,71 @@ public class Graph {
         customList.get(src).add(new Node(dest, weight));
     }
 
+    public void bfs(int vertex) {
+        System.out.println("BFS Traversal of Adj Matrix");
+        boolean[] visited = new boolean[this.v];
+        Queue<Integer> bfsQ = new LinkedList<>();
+        visited[vertex] = true;
+        bfsQ.add(vertex);
+        while(bfsQ.size() > 0) {
+            int src = bfsQ.remove();
+            System.out.print(src + " ");
+            for (int i = 0; i < v; i++) {
+                if (!visited[i] && adjMatrix[src][i]) {
+                    visited[i] = true;
+                    bfsQ.add(i);
+                }
+            }
+        }
+        System.out.println();
+        System.out.println("BFS Traversal of Adj List");
+        Arrays.fill(visited, false);
+        bfsQ.clear();
+        visited[vertex] = true;
+        bfsQ.add(vertex);
+        while (bfsQ.size() > 0) {
+            int src = bfsQ.remove();
+            System.out.print(src+ " ");
+            for (Integer i : adjList.get(src)) {
+                if (!visited[i]) {
+                    visited[i] = true;
+                    bfsQ.add(i);
+                }
+            }
+        }
+        System.out.println();
+    }
+
+    public void dfs(int vertex) {
+        System.out.println("DFS Traversal of Adj Matrix");
+        boolean[] visited = new boolean[v];
+        dfsUtil(vertex, visited);
+        System.out.println();
+        System.out.println("DFS Traversal of Adj List");
+        Arrays.fill(visited, false);
+        dfsList(vertex, visited);
+        System.out.println();
+    }
+
+    private void dfsUtil(int vertex, boolean[] visited) {
+        visited[vertex] = true;
+        System.out.print(vertex + " ");
+        for (int i = 0; i < v; i++) {
+            if (!visited[i] && adjMatrix[vertex][i]) {
+                dfsUtil(i, visited);
+            }
+        }
+    }
+
+    private void dfsList(int vertex, boolean[] visited) {
+        visited[vertex] = true;
+        for (Integer adjV : adjList.get(vertex)) {
+            if (!visited[adjV]) {
+                dfsList(adjV, visited);
+            }
+        }
+    }
+
     public static void main(String[] args) {
         Graph g = new Graph(5);
         g.addEdge(2, 4);
@@ -127,5 +192,9 @@ public class Graph {
         g.addEdge(1, 4, 2);
         g.addEdge(3, 4, 11);
         g.printGraphMatrix();
+        g.bfs(0);
+        g.bfs(1);
+        g.dfs(0);
+        g.dfs(1);
     }
 }
