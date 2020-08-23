@@ -3,6 +3,7 @@ package MyPackage;
 import javafx.util.Pair;
 
 import java.util.*;
+import java.util.Stack;
 
 public class Graph {
     boolean[][] adjMatrix;
@@ -149,6 +150,27 @@ public class Graph {
         System.out.println();
     }
 
+    public int[] spBfs(int src) {
+        int[] dist = new int[v];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[src] = 0;
+        Queue<Integer> q = new LinkedList<>();
+        q.add(src);
+        boolean[] visited = new boolean[v];
+        visited[src] = true;
+        while (q.size() > 0) {
+            int vertex = q.remove();
+            for (Integer adjV: adjList.get(vertex)) {
+                if (!visited[adjV]) {
+                    visited[adjV] = true;
+                    dist[adjV] = dist[vertex] + 1;
+                    q.add(adjV);
+                }
+            }
+        }
+        return dist;
+    }
+
     public void dfs(int vertex) {
         System.out.println("DFS Traversal of Adj Matrix");
         boolean[] visited = new boolean[v];
@@ -179,6 +201,93 @@ public class Graph {
         }
     }
 
+    public void printTopologicalSort() {
+        boolean[] visited = new boolean[v];
+        java.util.Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < v ; i++) {
+            if (!visited[i]) {
+                topoDfs(i, stack, visited);
+            }
+        }
+        System.out.println("Topological Sort:");
+        while(!stack.empty()) {
+            System.out.print(stack.pop() + " ");
+        }
+        System.out.println();
+    }
+
+    private void topoDfs(int i, Stack<Integer> stack, boolean[] visited) {
+        visited[i] = true;
+        for (Integer adjV: adjList.get(i)) {
+            if (!visited[adjV]) {
+                topoDfs(adjV, stack, visited);
+            }
+        }
+        stack.push(i);
+    }
+
+    public int[] dijkstra(int src) {
+        int[] dist = new int[v];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        PriorityQueue<Integer> pq = new PriorityQueue<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return dist[o1] - dist[o2];
+            }
+        });
+        dist[src] = 0;
+        pq.add(src);
+        while (!pq.isEmpty()) {
+            int vertex = pq.remove();
+            for (Pair<Integer, Integer> adjV: weightList.get(vertex)) {
+                if ((dist[vertex] + adjV.getValue()) < dist[adjV.getKey()]) {
+                    dist[adjV.getKey()] = dist[vertex] + adjV.getValue();
+                }
+            }
+        }
+        return dist;
+    }
+
+    public int[] topoSp(int src) {
+        int[] dist = new int[v];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        Stack<Integer> topo = new Stack<Integer>();
+        topoDfs(src, topo, new boolean[v]);
+        dist[src] = 0;
+        while(!topo.empty()) {
+            int vertex = topo.pop();
+            if (dist[vertex] != Integer.MAX_VALUE) {
+                for (Pair<Integer, Integer> adjV: weightList.get(vertex)) {
+                    if ((dist[vertex] + adjV.getValue()) < dist[adjV.getKey()]) {
+                        dist[adjV.getKey()] = dist[vertex] + adjV.getValue();
+                    }
+                }
+            }
+        }
+        return dist;
+    }
+
+    public int[] bellman(int src) {
+        int[] dist = new int[v];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[src] = 0;
+        int s = 0;
+        for (int i = 0 ; i < v-1; i++) {
+            s = 0;
+            for (List<Pair<Integer, Integer>> adjList: weightList) {
+                for (Pair<Integer, Integer> adjV : adjList) {
+                    if (dist[s] != Integer.MAX_VALUE) {
+                        if (dist[s] + adjV.getValue() < dist[adjV.getKey()]) {
+                            dist[adjV.getKey()] = dist[s] + adjV.getValue();
+                        }
+                    }
+                }
+                s++;
+            }
+        }
+        return dist;
+    }
+
     public static void main(String[] args) {
         Graph g = new Graph(5);
         g.addEdge(2, 4);
@@ -196,5 +305,49 @@ public class Graph {
         g.bfs(1);
         g.dfs(0);
         g.dfs(1);
+        g.printTopologicalSort();
+        int dist[] = g.spBfs(0);
+        System.out.println("Shortest distance from source vertex : " + 0);
+        for (int i: dist) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+        int dista[] = g.spBfs(1);
+        System.out.println("Shortest distance from source vertex : " + 1);
+        for (int i: dista) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+        int distb[] = g.dijkstra(1);
+        System.out.println("Shortest distance from source vertex using dijkstra : " + 1);
+        for (int i: distb) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+        int distc[] = g.dijkstra(2);
+        System.out.println("Shortest distance from source vertex using dijkstra : " + 2);
+        for (int i: distc) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+        int distd[] = g.dijkstra(1);
+        System.out.println("Shortest distance from source vertex using DAG : " + 1);
+        for (int i: distd) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+        int diste[] = g.dijkstra(2);
+        System.out.println("Shortest distance from source vertex using DAG : " + 2);
+        for (int i: diste) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+        g.addEdge(3, 2, -1);
+        int distf[] = g.bellman(1);
+        System.out.println("Shortest distance from source vertex using DAG : " + 1);
+        for (int i: distf) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
     }
 }
