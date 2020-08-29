@@ -13,6 +13,7 @@ public class Graph {
     List<List<Pair<Integer, Integer>>> weightList;
     List<List<Node>> customList;
     Map<Integer, Set<Integer>> adjMap;
+    List<List<Pair<Integer, Integer>>> unWeightList;
     int v;
     static class Node {
         int dest;
@@ -29,12 +30,14 @@ public class Graph {
         adjList = new ArrayList<>();
         adjArray = new LinkedList[V];
         weightList = new ArrayList<>();
+        unWeightList = new ArrayList<>();
         customList = new ArrayList<>();
         adjMap = new HashMap<>();
         for(int i = 0; i < V; i++) {
             adjList.add(new ArrayList<>());
             adjArray[i] = new LinkedList<>();
             weightList.add(new ArrayList<>());
+            unWeightList.add(new ArrayList<>());
             customList.add(new ArrayList<>());
             adjMap.put(i, new HashSet<>());
         }
@@ -113,6 +116,8 @@ public class Graph {
         weightMatrix[src][dest] = weight;
         weightList.get(src).add(new Pair(dest, weight));
         customList.get(src).add(new Node(dest, weight));
+        unWeightList.get(src).add(new Pair(dest, weight));
+        unWeightList.get(dest).add(new Pair(src, weight));
     }
 
     public void bfs(int vertex) {
@@ -288,6 +293,46 @@ public class Graph {
         return dist;
     }
 
+    public void printMST() {
+        boolean[] s = new boolean[v];
+        int[] dist = new int[v];
+        int[] parent = new int[v];
+        int[] e = new int[v];
+        PriorityQueue<Integer> pq = new PriorityQueue<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return dist[o1] - dist[o2];
+            }
+        });
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[0] = 0;
+        pq.add(0);
+        parent[0] = -1;
+        while (pq.size() > 0) {
+            int vertex = pq.remove();
+            System.out.println("v: "+vertex);
+            s[vertex] = true;
+            e[vertex] = dist[vertex];
+            for (Pair<Integer, Integer> adjV: unWeightList.get(vertex)) {
+                if (!s[adjV.getKey()]) {
+                    if (adjV.getValue() < dist[adjV.getKey()]) {
+                        System.out.println("k: "+adjV.getKey());
+                        System.out.println("v: "+adjV.getValue());
+                        dist[adjV.getKey()] = adjV.getValue();
+                        parent[adjV.getKey()] = vertex;
+                        pq.remove(adjV.getKey());
+                        pq.add(adjV.getKey());
+                    }
+                }
+            }
+        }
+        System.out.println("Minimum Spanning Tree: ");
+        for (int i: e) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+    }
+
     public static void main(String[] args) {
         Graph g = new Graph(5);
         g.addEdge(2, 4);
@@ -349,5 +394,8 @@ public class Graph {
             System.out.print(i + " ");
         }
         System.out.println();
+        g.addEdge(0, 1, 111);
+        g.addEdge(0, 2, 13);
+        g.printMST();
     }
 }

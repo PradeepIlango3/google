@@ -1,3 +1,5 @@
+import javafx.util.Pair;
+
 import java.util.*;
 
 public class ScratchBook {
@@ -99,6 +101,20 @@ public class ScratchBook {
                 return o2.marks - o1.marks;
             }
         });
+        PriorityQueue<Pair<Integer, Integer>> newPQ = new PriorityQueue<Pair<Integer, Integer>>(new Comparator<Pair<Integer, Integer>>(){
+            @Override
+            public int compare(Pair<Integer, Integer> a, Pair<Integer, Integer> b) {
+                return a.getKey() -b.getKey();
+            }
+        });
+        newPQ.add(new Pair<>(13, 100));
+        newPQ.add(new Pair<>(130, 100));
+        newPQ.add(new Pair<>(3, 100));
+        newPQ.add(new Pair<>(123, 100));
+        System.out.println(newPQ.size());
+        System.out.println(newPQ.peek());
+        System.out.println(newPQ.remove(new Pair<>(123, 100)));
+        System.out.println(newPQ.size());
 
         //Map
         System.out.println("Map");
@@ -134,5 +150,19 @@ public class ScratchBook {
         System.out.println(g[0]);
         Arrays.sort(g, c2);
         System.out.println(g[0]);
+
+        //Pair and Map
+        Map<Pair<Integer, Integer>, Boolean> seen = new HashMap<>();
+        seen.put(new Pair<>(0,2), true);
+        seen.put(new Pair<>(0,2), true);
+        Pair<Integer, Integer> item = new Pair<>(5,75);
+        seen.put(item, true);
+        System.out.println(seen.containsKey(item));
+        System.out.println(seen.containsKey(new Pair<>(0,2)));
+        
+        //ArrayList
+        ArrayList<Integer> listA = new ArrayList<>();
+        listA.add(1);
+        listA.remove(5);
     }
 }
