@@ -27,5 +27,9 @@ public class ReverseLinkedList {
         list.print();
         ReverseLinkedList.reverse(list);
         list.print();
+        list.reverse();
+        list.print();
+        list.reverseR();
+        list.print();
     }
 }
