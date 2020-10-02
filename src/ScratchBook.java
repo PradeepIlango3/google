@@ -22,6 +22,7 @@ public class ScratchBook {
         System.out.println(stack);
         stack.pop();
         System.out.println(stack);
+        System.out.println(stack.empty());
 
         //LinkedList
         System.out.println("LinkedList:");
@@ -51,6 +52,7 @@ public class ScratchBook {
         System.out.println(queue);
         queue.remove();
         System.out.println(queue);
+        System.out.println(queue.peek());
 
         //Dequeue
         Deque<Integer> deque = new LinkedList<>();
@@ -120,8 +122,10 @@ public class ScratchBook {
         System.out.println("Map");
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(1, true);
-        map.put(5, true);
+        map.get(1);
+
         map.remove(5);
+        map.containsKey(4);
         System.out.println(map.size());
 
         //Arrays
@@ -163,6 +167,22 @@ public class ScratchBook {
         //ArrayList
         ArrayList<Integer> listA = new ArrayList<>();
         listA.add(1);
-        listA.remove(5);
+
+        String ex = "pradeep.ilango+pradeep.ilango+p.i3@gmail.com";
+        System.out.println(ex.contains("+"));
+        System.out.println(ex.indexOf("+"));
+        System.out.println(ex.lastIndexOf("+"));
+        System.out.println(ex.lastIndexOf("@"));
+        System.out.println(ex.substring(ex.indexOf("+")+1, ex.lastIndexOf("@")));
+        String e = ex.replace(ex.substring(ex.indexOf("+"), ex.lastIndexOf("@")), "");
+        System.out.println(e);
+
+        String.join(" ", "Pradeep", "Ilango");
+        StringBuilder newsb = new StringBuilder();
+        newsb.append(String.valueOf(5));
+        System.out.println(newsb);
+
+        System.out.println((int)(Math.log(8)/Math.log(2)));
+
     }
 }
